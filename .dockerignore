@@ -1,0 +1,17 @@
+node_modules
+.next
+.env.local
+.git
+README.md
+Dockerfile
+.dockerignore
+package-lock.json
+AGENTS.md
+CLAUDE.md
+drizzle
+components.json
+tsconfig.json
+eslint.config.mjs
+postcss.config.mjs
+tailwind.config.ts
+next.config.ts
