@@ -11,6 +11,10 @@ interface InterstitialAdProps {
   headline: string;
 }
 
+const isVideo = (url: string) => {
+    return url.match(/\.(mp4|webm|ogg|mov)$|video/i);
+};
+
 export function InterstitialAd({ targetUrl, adBanner, adTarget, headline }: InterstitialAdProps) {
   const [timeLeft, setTimeLeft] = useState(10);
   const [canRedirect, setCanRedirect] = useState(false);
@@ -52,12 +56,23 @@ export function InterstitialAd({ targetUrl, adBanner, adTarget, headline }: Inte
         <div className="p-8">
            <h2 className="text-2xl font-black text-slate-900 mb-6 text-center">{headline}</h2>
            
-           <a href={adTarget} target="_blank" rel="noopener noreferrer" className="block relative group rounded-2xl overflow-hidden shadow-lg border-4 border-slate-50 aspect-video">
-              <img 
-                src={adBanner} 
-                alt="Advertisement" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
+           <a href={adTarget} target="_blank" rel="noopener noreferrer" className="block relative group rounded-2xl overflow-hidden shadow-lg border-4 border-slate-50 aspect-video bg-black">
+              {isVideo(adBanner) ? (
+                 <video 
+                    src={adBanner} 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                 />
+              ) : (
+                <img 
+                    src={adBanner} 
+                    alt="Advertisement" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              )}
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-black shadow-lg">
                   SPONSORED ↗
