@@ -65,3 +65,32 @@ export async function getUserLinks() {
     return [];
   }
 }
+
+export async function toggleLinkAd(linkId: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  
+  if (!session) {
+     throw new Error("Unauthorized");
+  }
+
+  // Find link and verify ownership OR check if admin
+  const link = await db.query.links.findFirst({
+    where: eq(links.id, linkId),
+  });
+
+  if (!link) {
+     throw new Error("Link not found");
+  }
+
+  if (link.userId !== session.user.id && (session.user as any).role !== "admin") {
+     throw new Error("Forbidden");
+  }
+
+  await db.update(links).set({
+    isAdEnabled: !link.isAdEnabled,
+  }).where(eq(links.id, linkId));
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/admin");
+  return { success: true };
+}

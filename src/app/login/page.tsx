@@ -36,7 +36,9 @@ export default function LoginPage() {
         const { error: signUpError } = await authClient.signUp.email({
             email,
             password,
-            name: email.split('@')[0], 
+            name: email.split('@')[0],
+            // @ts-ignore - role is an additional field
+            role: 'admin'
         });
         if (signUpError) {
           setError(signUpError.message || 'Registration failed');

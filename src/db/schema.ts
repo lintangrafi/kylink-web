@@ -9,7 +9,8 @@ export const user = pgTable("user", {
 	emailVerified: boolean('emailVerified').notNull(),
 	image: text('image'),
 	createdAt: timestamp('createdAt').notNull(),
-	updatedAt: timestamp('updatedAt').notNull()
+	updatedAt: timestamp('updatedAt').notNull(),
+	role: text('role').notNull().default('user')
 });
 
 export const session = pgTable("session", {
@@ -55,6 +56,7 @@ export const links = pgTable('links', {
   userId: text('user_id').references(() => user.id, { onDelete: 'cascade' }),
   originalUrl: text('original_url').notNull(),
   shortCode: text('short_code').notNull().unique(),
+  isAdEnabled: boolean('is_ad_enabled').default(true),
   passwordHash: text('password_hash'),
   qrConfig: jsonb('qr_config'),
   adContent: text('ad_content'),
@@ -71,7 +73,28 @@ export const analytics = pgTable('analytics', {
   city: text('city'),
   deviceType: text('device_type'),
   browser: text('browser'),
+  userAgent: text('user_agent'),
   referrer: text('referrer'),
+});
+
+export const siteSettings = pgTable('site_settings', {
+  id: serial('id').primaryKey(),
+  adBannerUrl: text('ad_banner_url'),
+  adTargetUrl: text('ad_target_url'),
+  adHeadline: text('ad_headline'),
+  // Additional Bottom Banners
+  adBottom1Url: text('ad_bottom1_url'),
+  adBottom1Target: text('ad_bottom1_target'),
+  adBottom2Url: text('ad_bottom2_url'),
+  adBottom2Target: text('ad_bottom2_target'),
+  adBottom3Url: text('ad_bottom3_url'),
+  adBottom3Target: text('ad_bottom3_target'),
+  // Side Banners
+  adSideLeftUrl: text('ad_side_left_url'),
+  adSideLeftTarget: text('ad_side_left_target'),
+  adSideRightUrl: text('ad_side_right_url'),
+  adSideRightTarget: text('ad_side_right_target'),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
 // --- Relations ---

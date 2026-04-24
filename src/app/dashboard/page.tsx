@@ -4,6 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { QrDialog } from '@/components/qr-dialog';
+import { BarChart3, ExternalLink, Megaphone, MegaphoneOff } from 'lucide-react';
+import Link from 'next/link';
+import { toggleLinkAd } from '@/actions/link-actions';
 
 export default async function DashboardPage() {
   const links = await getUserLinks();
@@ -79,10 +82,33 @@ export default async function DashboardPage() {
                       {link.originalUrl}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-3 shrink-0">
+                    <form action={async () => { "use server"; await toggleLinkAd(link.id); }}>
+                      <button
+                        type="submit"
+                        className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
+                            link.isAdEnabled 
+                            ? "hover:bg-orange-50 text-orange-600" 
+                            : "hover:bg-slate-100 text-slate-300"
+                        }`}
+                        title={link.isAdEnabled ? "Ads Enabled - Click to Disable" : "Ads Disabled - Click to Enable"}
+                      >
+                        {link.isAdEnabled ? <Megaphone className="w-5 h-5" /> : <MegaphoneOff className="w-5 h-5" />}
+                        <span className="text-[10px] font-black sm:inline hidden uppercase tracking-wider">Ads</span>
+                      </button>
+                    </form>
+
+                    <Link 
+                      href={`/dashboard/analytics/${link.shortCode}`}
+                      className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-blue-600 transition-colors flex items-center gap-2"
+                      title="View Stats"
+                    >
+                      <BarChart3 className="w-5 h-5" />
+                      <span className="text-xs font-bold sm:inline hidden uppercase tracking-wider">Stats</span>
+                    </Link>
                     <QrDialog url={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${link.shortCode}`} slug={link.shortCode} />
-                    <div className="text-xs text-slate-400">
-                      {new Date(link.createdAt!).toLocaleDateString()}
+                    <div className="text-xs text-slate-400 font-medium ml-2">
+                       {new Date(link.createdAt!).toLocaleDateString()}
                     </div>
                   </div>
                 </CardContent>
